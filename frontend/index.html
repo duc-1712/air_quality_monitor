@@ -1,68 +1,144 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Giám sát chất lượng không khí</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  </head>
 
-  <body>
-  </head>
-  <body>
-    <header>
-      <h1>🌤️ Hệ thống giám sát chất lượng không khí Hà Nội</h1>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giám sát chất lượng không khí Hà Nội</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+</head>
 
-    <!-- Nút ẩn/hiện sidebar -->
+<body>
+  <header>
+    <h1>🌤️ Hệ thống giám sát chất lượng không khí Hà Nội</h1>
     <button id="toggle-sidebar">☰</button>
+  </header>
 
-    <div id="container">
-      <aside id="sidebar">
-        <h2>📍 Danh sách trạm đo</h2>
-        <ul id="station-list">
-          <li>Đang tải dữ liệu trạm...</li>
-        </ul>
-        <h3>🌈 Thang màu AQI</h3>
-        <table class="legend">
-          <tr>
-            <td style="background: #00e400"></td>
-            <td>Tốt (0–50)</td>
-          </tr>
-          <tr>
-            <td style="background: #ffff00"></td>
-            <td>Trung bình (51–100)</td>
-          </tr>
-          <tr>
-            <td style="background: #ff7e00"></td>
-            <td>Kém (101–150)</td>
-          </tr>
-          <tr>
-            <td style="background: #ff0000"></td>
-            <td>Xấu (151–200)</td>
-          </tr>
-          <tr>
-            <td style="background: #8f3f97"></td>
-            <td>Rất xấu (201–300)</td>
-          </tr>
-          <tr>
-            <td style="background: #7e0023"></td>
-            <td>Nguy hiểm (301+)</td>
-          </tr>
+  <div id="top-container">
+    <aside id="sidebar">
+      <h2>📍 Danh sách trạm đo</h2>
+      <ul id="station-list">
+        <li>Đang tải dữ liệu trạm...</li>
+      </ul>
+
+      <h3>🌈 Thang màu AQI</h3>
+      <table class="legend">
+        <tr>
+          <td style="background: #00e400"></td>
+          <td>Tốt (0–50)</td>
+        </tr>
+        <tr>
+          <td style="background: #ffff00"></td>
+          <td>Trung bình (51–100)</td>
+        </tr>
+        <tr>
+          <td style="background: #ff7e00"></td>
+          <td>Kém (101–150)</td>
+        </tr>
+        <tr>
+          <td style="background: #ff0000"></td>
+          <td>Xấu (151–200)</td>
+        </tr>
+        <tr>
+          <td style="background: #8f3f97"></td>
+          <td>Rất xấu (201–300)</td>
+        </tr>
+        <tr>
+          <td style="background: #7e0023"></td>
+          <td>Nguy hiểm (301+)</td>
+        </tr>
+      </table>
+    </aside>
+
+    <main id="map"></main>
+  </div>
+
+  <div id="bottom-container">
+    <div class="container-wrapper">
+
+      <div class="chart-section">
+        <h3 id="chart-title">Lịch sử quan trắc</h3>
+        <p id="chart-instruction">Vui lòng chọn một trạm trên bản đồ để xem lịch sử.</p>
+
+        <div id="charts-wrapper" style="height: 600px; overflow-y: auto; padding-right: 10px;">
+          <div id="chart-pm25" style="width: 100%; height: 250px; margin-bottom: 30px;"></div>
+          <div id="chart-pm10" style="width: 100%; height: 250px; margin-bottom: 30px;"></div>
+          <div id="chart-no2" style="width: 100%; height: 250px; margin-bottom: 30px;"></div>
+          <div id="chart-co" style="width: 100%; height: 250px; margin-bottom: 30px;"></div>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <h3>Giá trị giới hạn (QCVN 05:2013/BTNMT)</h3>
+        <p class="unit-label">Đơn vị: Microgam trên mét khối (µg/m³)</p>
+        <table class="standard-table">
+          <thead>
+            <tr>
+              <th>TT</th>
+              <th>Thông số</th>
+              <th>TB 1 giờ</th>
+              <th>TB 24 giờ</th>
+              <th>TB Năm</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><b>SO₂</b></td>
+              <td>350</td>
+              <td>125</td>
+              <td>50</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><b>CO</b></td>
+              <td>30.000</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><b>NO₂</b></td>
+              <td>200</td>
+              <td>100</td>
+              <td>40</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><b>O₃</b></td>
+              <td>200</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><b>PM₁₀</b></td>
+              <td>-</td>
+              <td>100</td>
+              <td>50</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><b>PM₂.₅</b></td>
+              <td>-</td>
+              <td>50</td>
+              <td>25</td>
+            </tr>
+          </tbody>
         </table>
-      </aside>
-      <main id="map"></main>
+        <p class="note">(*): Dấu (-) là không quy định.</p>
+      </div>
     </div>
+  </div>
 
-    <footer>
-      <p>
-        Nguồn dữ liệu:
-        <a href="https://aqicn.org/" target="_blank">AQICN API</a>
-      </p>
-    </footer>
+  <footer>
+    <p>Nguồn dữ liệu: <a href="https://aqicn.org/" target="_blank">AQICN API</a></p>
+  </footer>
 
-    <!-- Quan trọng: Dùng 'defer' để script chạy sau khi HTML được load -->
-    <script src="script.js" defer></script>
-  </body>
+  <script src="script.js" defer></script>
+</body>
+
 </html>

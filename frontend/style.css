@@ -1,117 +1,144 @@
-body,
-html {
+/* Cài đặt chung */
+body, html {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  width: 100vw;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* QUAN TRỌNG: Cho phép cuộn trang */
+  overflow-y: auto; 
+  background-color: #f4f6f9;
 }
+
 header {
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-}
-header h1 {
-  margin: 0;
-  font-size: 1.5em;
-}
-#container {
+  padding: 0 20px;
+  height: 50px;
   display: flex;
-  flex: 1;
-  height: calc(100vh - 60px - 29px);
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1002;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+header h1 { font-size: 1.3em; margin: 0; }
+
+/* Nút toggle sidebar */
+#toggle-sidebar {
+  background: transparent; border: 1px solid rgba(255,255,255,0.5); 
+  color: white; font-size: 1.2em; cursor: pointer; padding: 5px 10px; 
+  border-radius: 4px; transition: 0.2s;
+}
+#toggle-sidebar:hover { background: rgba(255,255,255,0.2); }
+
+/* --- PHẦN 1: TOP CONTAINER (Sidebar + Map) --- */
+#top-container {
+  display: flex;
+  /* Chiếm 85% chiều cao viewport để người dùng biết bên dưới còn nội dung */
+  height: 85vh; 
+  border-bottom: 4px solid #e9ecef;
+  position: relative;
+}
+
+/* Sidebar */
 #sidebar {
-  width: 300px;
-  background: #f8f9fa;
-  border-right: 1px solid #dee2e6;
-  padding: 15px;
+  width: 320px;
+  background: white;
+  border-right: 1px solid #ddd;
   overflow-y: auto;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
   z-index: 1000;
 }
 #sidebar.hidden {
-  display: none;
-}
-#container.fullscreen #map {
-  flex: 1;
-  width: 100%;
+  margin-left: -320px; /* Ẩn sidebar bằng margin âm */
 }
 #sidebar h2 {
-  margin-top: 0;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 5px;
+    margin-top: 0; border-bottom: 2px solid #007bff; 
+    padding-bottom: 5px; color: #333; font-size: 1.2em;
 }
-#station-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+
+#station-list { list-style: none; padding: 0; }
 #station-list li {
-  padding: 10px;
-  border-bottom: 1px solid #e9ecef;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;
 }
-#station-list li:hover {
-  background-color: #e9ecef;
-}
-.legend {
-  width: 100%;
-  font-size: 0.9em;
-  margin-top: 15px;
-}
-.legend td:first-child {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #ccc;
-}
-.legend td {
-  padding: 5px;
-}
+#station-list li:hover { background-color: #f0f8ff; }
+
+/* Chú giải màu */
+.legend { width: 100%; font-size: 0.9em; margin-top: 15px; border-collapse: collapse;}
+.legend td { padding: 5px; }
+.legend td:first-child { width: 20px; height: 20px; border: 1px solid #ccc; }
+
+/* Bản đồ */
 #map {
   flex: 1;
   height: 100%;
-  background-color: #eee;
+  background-color: #ddd;
+  z-index: 1;
 }
+
+/* --- PHẦN 2: BOTTOM CONTAINER (Chart + Table) --- */
+#bottom-container {
+  padding: 20px;
+  background-color: #fff;
+  min-height: 500px;
+}
+
+.container-wrapper {
+  display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Cột biểu đồ */
+.chart-section {
+  flex: 2; /* Chiếm 2/3 */
+  border: 1px solid #ddd; padding: 15px;
+  border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+#pm25-chart { width: 100%; height: 400px; }
+#chart-instruction { 
+    text-align: center; margin-top: 100px; color: #888; font-style: italic; 
+}
+
+/* Cột bảng */
+.table-section {
+  flex: 1; /* Chiếm 1/3 */
+  border: 1px solid #ddd; padding: 15px;
+  border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  overflow-x: auto;
+}
+
+.table-section h3, .chart-section h3 {
+  margin-top: 0; color: #0056b3; border-bottom: 2px solid #0056b3;
+  padding-bottom: 10px; font-size: 1.1em;
+}
+
+/* Style cho bảng giống hình mẫu */
+.standard-table {
+  width: 100%; border-collapse: collapse; font-size: 0.9em; margin-top: 10px;
+}
+.standard-table th {
+  background-color: #f8f9fa; padding: 8px; border: 1px solid #ccc; font-weight: bold;
+}
+.standard-table td {
+  padding: 8px; border: 1px solid #ccc; text-align: center;
+}
+.standard-table tr:nth-child(even) { background-color: #fcfcfc; }
+
+.unit-label { font-size: 0.85em; color: #666; text-align: right; margin-bottom: 5px;}
+.note { font-size: 0.8em; color: #666; margin-top: 10px; font-style: italic;}
+
 footer {
-  background-color: #343a40;
-  color: white;
-  padding: 5px;
-  text-align: center;
-  font-size: 0.8em;
-  z-index: 1001;
-}
-footer a {
-  color: #007bff;
-  text-decoration: none;
-}
-#toggle-sidebar {
-  position: absolute;
-  top: 10px; /* Đưa nút lên trên phần header */
-  left: 10px;
-  z-index: 1100;
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s, transform 0.2s;
+  text-align: center; padding: 10px; background: #343a40; color: white; font-size: 0.8em;
 }
 
-#toggle-sidebar:hover {
-  background: #0056b3;
-  transform: scale(1.1);
-}
-
-#toggle-sidebar:active {
-  transform: scale(0.95);
+/* Responsive Mobile */
+@media (max-width: 768px) {
+  .container-wrapper { flex-direction: column; }
+  #top-container { height: 60vh; }
+  #sidebar { position: absolute; height: 100%; box-shadow: 2px 0 5px rgba(0,0,0,0.2); }
 }
